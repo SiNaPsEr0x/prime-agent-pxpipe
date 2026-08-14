@@ -164,6 +164,7 @@ Per le installazioni **Git non pinnate**, l'auto-update è **ON di default**.
 Comportamento:
 
 - controllo al massimo ogni 24 ore;
+- richiede che la cartella del package sia il top-level del proprio checkout Git dedicato;
 - accetta soltanto aggiornamenti **fast-forward**;
 - se il checkout locale diverge, non lo sovrascrive;
 - se GitHub è irraggiungibile, il plugin continua a caricarsi;

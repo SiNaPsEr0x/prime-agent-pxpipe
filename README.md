@@ -164,6 +164,7 @@ For **unpinned Git installs**, auto-update is **ON by default**.
 Behavior:
 
 - checks GitHub at most once every **24 hours**;
+- requires the package directory to be the top level of its dedicated Git checkout;
 - only accepts **fast-forward** updates;
 - never overwrites a divergent local checkout;
 - GitHub/network failures do not prevent the plugin from loading;
