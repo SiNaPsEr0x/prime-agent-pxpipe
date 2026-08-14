@@ -294,7 +294,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 🙏 Acknowledgements
 
-Special thanks to the developers of [Prime-Agent](https://github.com/PrimeIntellect-ai/prime-agent) and [pxpipe](https://github.com/SiNaPsEr0x/pxpipe) for their magnificent software and for making this integration possible.
+Special thanks to the developers of [Prime-Agent](https://github.com/PrimeIntellect-ai/prime-agent) and [pxpipe](https://github.com/teamchong/pxpipe) for their magnificent software and for making this integration possible.
 
 ## 📄 License
 
