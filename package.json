@@ -1,0 +1,38 @@
+{
+  "name": "prime-agent-pxpipe",
+  "version": "1.2.0",
+  "description": "Native pxpipe compression for Prime-Agent with persistent state, live savings, GitHub auto-update, uninstall helpers and polished community docs.",
+  "type": "module",
+  "license": "MIT",
+  "author": "SiNaPsEr0x",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SiNaPsEr0x/prime-agent-pxpipe.git"
+  },
+  "homepage": "https://github.com/SiNaPsEr0x/prime-agent-pxpipe#readme",
+  "bugs": {
+    "url": "https://github.com/SiNaPsEr0x/prime-agent-pxpipe/issues"
+  },
+  "keywords": [
+    "pi-package",
+    "prime-agent",
+    "pxpipe",
+    "context-compression",
+    "gpt-5.6-sol",
+    "coding-agent"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "pxpipe-proxy": ">=0.13.1 <0.14.0"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/pxpipe.js"
+    ]
+  },
+  "scripts": {
+    "test": "node --check extensions/pxpipe.js && node --check lib/state.js && node --check lib/updater.js && node --check lib/runtime.js"
+  }
+}

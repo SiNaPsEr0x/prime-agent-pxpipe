@@ -1,0 +1,57 @@
+name: Bug report
+description: Report a reproducible prime-agent-pxpipe problem
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Do not include API keys, OAuth tokens, secrets, or private prompts/tool output.
+  - type: input
+    id: prime_version
+    attributes:
+      label: Prime-Agent version
+      placeholder: "0.7.2"
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Model
+      placeholder: "gpt-5.6-sol"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: "Ubuntu WSL2 / Node 22"
+    validations:
+      required: true
+  - type: textarea
+    id: status
+    attributes:
+      label: /pxpipe-status output
+      render: text
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Start prime-agent
+        2. Run ...
+        3. See ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
