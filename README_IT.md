@@ -292,6 +292,10 @@ La compressione context-to-image di pxpipe è **lossy**. È ottima per cronologi
 
 Vedi [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## 🙏 Ringraziamenti
+
+Un ringraziamento speciale agli sviluppatori di [Prime-Agent](https://github.com/PrimeIntellect-ai/prime-agent) e [pxpipe](https://github.com/SiNaPsEr0x/pxpipe) per i loro magnifici software e per aver reso possibile questa integrazione.
+
 ## 📄 Licenza
 
 MIT — vedi [LICENSE](LICENSE).
