@@ -5,7 +5,7 @@ Thanks for improving **prime-agent-pxpipe**.
 ## Development
 
 ```bash
-npm install --omit=dev
+npm ci --omit=dev --ignore-scripts
 npm test
 ```
 

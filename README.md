@@ -165,11 +165,15 @@ Behavior:
 
 - checks GitHub at most once every **24 hours**;
 - requires the package directory to be the top level of its dedicated Git checkout;
+- trusts only the official GitHub `origin` and a branch tracking `origin/*`;
 - only accepts **fast-forward** updates;
-- never overwrites a divergent local checkout;
+- refuses dirty, detached, nested, or divergent checkouts without touching local work;
 - GitHub/network failures do not prevent the plugin from loading;
-- if dependencies changed, it runs `npm install`;
+- if dependencies changed, it performs a reproducible `npm ci` from `package-lock.json`;
+- `/pxpipe update` completes Git and dependency updates before reloading the extension;
 - update failures are fail-open and must not block Prime-Agent inference.
+
+> 🛡️ **Secure update pipeline:** no remote fallback, no destructive update over local changes, and no dependency resolution outside the committed lockfile.
 
 Manual check:
 

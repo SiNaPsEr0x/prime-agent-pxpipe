@@ -1,6 +1,6 @@
 {
   "name": "prime-agent-pxpipe",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Native pxpipe compression for Prime-Agent with persistent state, live savings, GitHub auto-update, uninstall helpers and polished community docs.",
   "type": "module",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "pxpipe-proxy": ">=0.13.1 <0.14.0"
+    "pxpipe-proxy": "0.13.1"
   },
   "pi": {
     "extensions": [

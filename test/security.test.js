@@ -6,6 +6,9 @@ import path from "node:path";
 import test from "node:test";
 import { checkAndApplyGitUpdate } from "../lib/updater.js";
 import { createUninstallHelper } from "../lib/uninstall.js";
+import { writeState } from "../lib/state.js";
+
+const OFFICIAL_REMOTE = "https://github.com/SiNaPsEr0x/prime-agent-pxpipe.git";
 
 function git(cwd, ...args) {
   return execFileSync("git", args, { cwd, encoding: "utf8", stdio: "pipe" }).trim();
@@ -66,6 +69,9 @@ test("updater preserves a legitimate standalone fast-forward", async (t) => {
   git(publisher, "commit", "-m", "update");
   git(publisher, "push", "origin", "main");
 
+  git(packageRoot, "remote", "set-url", "origin", OFFICIAL_REMOTE);
+  git(packageRoot, "config", `url.file://${remote}.insteadOf`, OFFICIAL_REMOTE);
+
   process.env.PRIME_PXPIPE_STATE_FILE = path.join(fixture, "state.json");
   const result = await checkAndApplyGitUpdate({ packageRoot, force: true });
 
@@ -74,6 +80,55 @@ test("updater preserves a legitimate standalone fast-forward", async (t) => {
     fs.readFileSync(path.join(packageRoot, "README.md"), "utf8").replaceAll("\r\n", "\n"),
     "updated\n",
   );
+});
+
+test("updater rejects dirty checkouts without losing local changes", async (t) => {
+  const fixture = fs.mkdtempSync(path.join(os.tmpdir(), "pxpipe-updater-dirty-"));
+  t.after(() => {
+    delete process.env.PRIME_PXPIPE_STATE_FILE;
+    fs.rmSync(fixture, { force: true, recursive: true });
+  });
+
+  const packageRoot = path.join(fixture, "package");
+  fs.mkdirSync(packageRoot);
+  git(packageRoot, "init", "--initial-branch=main");
+  configureAuthor(packageRoot);
+  fs.writeFileSync(path.join(packageRoot, "package.json"), '{"version":"1.0.0"}\n');
+  fs.writeFileSync(path.join(packageRoot, "README.md"), "initial\n");
+  git(packageRoot, "add", ".");
+  git(packageRoot, "commit", "-m", "initial");
+  git(packageRoot, "remote", "add", "origin", OFFICIAL_REMOTE);
+  git(packageRoot, "config", "branch.main.remote", "origin");
+  git(packageRoot, "config", "branch.main.merge", "refs/heads/main");
+  fs.writeFileSync(path.join(packageRoot, "README.md"), "local change\n");
+
+  process.env.PRIME_PXPIPE_STATE_FILE = path.join(fixture, "state.json");
+  const result = await checkAndApplyGitUpdate({ packageRoot, force: true });
+
+  assert.equal(result.status, "dirty");
+  assert.equal(fs.readFileSync(path.join(packageRoot, "README.md"), "utf8"), "local change\n");
+});
+
+test("state writes use private files and do not follow a predictable symlink", (t) => {
+  const fixture = fs.mkdtempSync(path.join(os.tmpdir(), "pxpipe-state-test-"));
+  const stateFile = path.join(fixture, "state.json");
+  const target = path.join(fixture, "target.txt");
+  const legacyTemporary = `${stateFile}.tmp-${process.pid}`;
+  t.after(() => {
+    delete process.env.PRIME_PXPIPE_STATE_FILE;
+    fs.rmSync(fixture, { force: true, recursive: true });
+  });
+
+  fs.writeFileSync(target, "untouched\n");
+  fs.symlinkSync(target, legacyTemporary);
+  process.env.PRIME_PXPIPE_STATE_FILE = stateFile;
+  writeState({ enabled: false });
+
+  assert.equal(fs.readFileSync(target, "utf8"), "untouched\n");
+  assert.equal(fs.lstatSync(legacyTemporary).isSymbolicLink(), true);
+  if (process.platform !== "win32") {
+    assert.equal(fs.statSync(stateFile).mode & 0o777, 0o600);
+  }
 });
 
 test("uninstall helper is exclusive, private, and contains no target paths", (t) => {
