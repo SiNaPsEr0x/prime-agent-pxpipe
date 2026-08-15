@@ -165,11 +165,11 @@ Comportamento:
 
 - controllo al massimo ogni 24 ore;
 - richiede che la cartella del package sia il top-level del proprio checkout Git dedicato;
-- considera attendibile solo l'`origin` GitHub ufficiale e un branch che traccia `origin/*`;
+- considera attendibile solo l'`origin` GitHub ufficiale (incluso il suo URL effettivo, senza riscritture) e un branch che traccia `origin/*`;
 - accetta soltanto aggiornamenti **fast-forward**;
 - rifiuta checkout sporchi, detached, annidati o divergenti senza toccare il lavoro locale;
 - se GitHub è irraggiungibile, il plugin continua a caricarsi;
-- se cambiano le dipendenze, esegue un `npm ci` riproducibile da `package-lock.json`;
+- se cambiano le dipendenze, esegue un `npm ci` riproducibile da `package-lock.json` e ripristina le dipendenze precedenti se l'installazione fallisce;
 - `/pxpipe update` completa l'update Git e delle dipendenze prima di ricaricare l'estensione;
 - un errore di update non deve mai bloccare Prime-Agent.
 

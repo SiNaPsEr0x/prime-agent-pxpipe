@@ -41,7 +41,7 @@ test("updater rejects a package nested in an enclosing repository", async (t) =>
   assert.equal(result.reason, "not_standalone_git_install");
 });
 
-test("updater preserves a legitimate standalone fast-forward", async (t) => {
+test("updater rejects an origin redirected through insteadOf", async (t) => {
   const fixture = fs.mkdtempSync(path.join(os.tmpdir(), "pxpipe-updater-standalone-"));
   t.after(() => {
     delete process.env.PRIME_PXPIPE_STATE_FILE;
@@ -75,10 +75,11 @@ test("updater preserves a legitimate standalone fast-forward", async (t) => {
   process.env.PRIME_PXPIPE_STATE_FILE = path.join(fixture, "state.json");
   const result = await checkAndApplyGitUpdate({ packageRoot, force: true });
 
-  assert.equal(result.status, "updated");
+  assert.equal(result.status, "unsupported");
+  assert.equal(result.reason, "untrusted_origin");
   assert.equal(
     fs.readFileSync(path.join(packageRoot, "README.md"), "utf8").replaceAll("\r\n", "\n"),
-    "updated\n",
+    "initial\n",
   );
 });
 
@@ -107,6 +108,33 @@ test("updater rejects dirty checkouts without losing local changes", async (t) =
 
   assert.equal(result.status, "dirty");
   assert.equal(fs.readFileSync(path.join(packageRoot, "README.md"), "utf8"), "local change\n");
+});
+
+test("updater treats untracked files as local checkout changes", async (t) => {
+  const fixture = fs.mkdtempSync(path.join(os.tmpdir(), "pxpipe-updater-untracked-"));
+  t.after(() => {
+    delete process.env.PRIME_PXPIPE_STATE_FILE;
+    fs.rmSync(fixture, { force: true, recursive: true });
+  });
+
+  const packageRoot = path.join(fixture, "package");
+  fs.mkdirSync(packageRoot);
+  git(packageRoot, "init", "--initial-branch=main");
+  configureAuthor(packageRoot);
+  fs.writeFileSync(path.join(packageRoot, "package.json"), '{"version":"1.0.0"}\n');
+  git(packageRoot, "add", "package.json");
+  git(packageRoot, "commit", "-m", "initial");
+  git(packageRoot, "remote", "add", "origin", OFFICIAL_REMOTE);
+  git(packageRoot, "config", "branch.main.remote", "origin");
+  git(packageRoot, "config", "branch.main.merge", "refs/heads/main");
+  const localFile = path.join(packageRoot, "local-notes.txt");
+  fs.writeFileSync(localFile, "do not delete\n");
+
+  process.env.PRIME_PXPIPE_STATE_FILE = path.join(fixture, "state.json");
+  const result = await checkAndApplyGitUpdate({ packageRoot, force: true });
+
+  assert.equal(result.status, "dirty");
+  assert.equal(fs.readFileSync(localFile, "utf8"), "do not delete\n");
 });
 
 test("state writes use private files and do not follow a predictable symlink", (t) => {
