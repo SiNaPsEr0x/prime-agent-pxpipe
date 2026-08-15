@@ -14,7 +14,7 @@ if ! command -v npm >/dev/null 2>&1; then
 fi
 
 echo "[1/2] Installo le dipendenze runtime..."
-npm install --prefix "$ROOT" --omit=dev --no-audit --no-fund
+npm ci --prefix "$ROOT" --omit=dev --ignore-scripts --no-audit --no-fund
 
 echo "[2/2] Registro il package locale in Prime-Agent..."
 prime-agent package install "$ROOT"

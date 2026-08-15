@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.1 - 2026-08-15
+
+- Hardened automatic updates to trust only the official GitHub origin and its tracked branches.
+- Added dirty-checkout protection before any fetch, merge, or rollback operation.
+- Made dependency refreshes reproducible with pinned versions, `package-lock.json`, and `npm ci`.
+- Made state writes atomic, exclusive, randomized, durable, and private (`0600`).
+- Added regression coverage for update and state-file security boundaries.
+
 ## 1.2.0 - 2026-08-14
 
 - Added polished README with project artwork and workflow graphics.
